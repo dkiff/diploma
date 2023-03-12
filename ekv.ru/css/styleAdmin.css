@@ -1,0 +1,113 @@
+table {
+    border: 1px solid black;
+    width: auto;
+    overflow-y: auto;
+}
+
+tr {
+    border: 1px solid black;
+    width: 100%;
+}
+
+td,
+th {
+    border: 1px solid black;
+    padding: 0px;
+}
+
+th{
+    text-align: center;
+    height: 40px;
+    width: 100px;
+    padding-left: 5px;
+    padding-right:5px;
+}
+
+
+.login input,
+.name input,
+.surname input,
+.fatherName input,
+.jobPlace input,
+.job input,
+.email input {
+    width: 100%;
+    height: 50px;
+    text-align: left;
+    border: none;
+    background-color: transparent;
+}
+
+.adminAccess input,
+.access input{
+    width: 50px;
+    height: 50px;
+    vertical-align: middle;
+    background-color: transparent;
+}
+
+.id {
+    width: 1px;
+    height: 100%;
+    text-align: center;
+}
+
+.login,
+.name,
+.surname,
+.fatherName,
+.jobPlace,
+.job,
+.email,
+.adminAccess,
+.access{
+    width: 200px;
+    height: 100%;
+}
+
+.email{
+    width: 350px;
+}
+
+.adminAccess{
+    text-align: center;
+    width: 50px;
+}
+
+.access{
+    text-align: center;
+    width: 50px;
+}
+
+tr:nth-child(2n-1){
+    background-color: white;
+}
+
+tr:nth-child(2n){
+    background-color: lightgray;
+}
+
+.us:nth-child(2n){
+    background-color: white;
+}
+
+.us:nth-child(2n-1){
+    background-color: lightgray;
+}
+
+.requests,
+.users{
+    display: block;
+    width: 90%;
+    padding:20px;
+    height: auto;
+    margin: 0 auto;
+    max-height: 400px;
+    margin-top:35px;
+    background-color: white;
+    filter: drop-shadow(10px 7px 15px rgba(0, 0, 0, 0.53));
+}
+
+.users{
+    margin-bottom: 35px;
+}
