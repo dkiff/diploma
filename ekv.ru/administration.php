@@ -8,7 +8,7 @@ mysqli_query($connect, "SET NAMES UTF8");
 
 <div class="requests">
     <h1 class="requestTitle">Запросы</h1>
-    <table>
+    <table style="width:100%;">
         <thead>
             <th style="width: 5px;">id</th>
             <th style="width:200px;">Фамилия пользователя</th>
@@ -16,25 +16,26 @@ mysqli_query($connect, "SET NAMES UTF8");
             <th style="width:200px;">Отчество пользователя</th>
             <th style="width:200px;">Место работы</th>
             <th style="width:200px;">Должность</th>
-            <th style="width:200px;">Email</th>
+            <th style="width:400px;">Email</th>
             <th style="width: 100px;">Дата регистрации</th>
-            <th style="border: none;"></th>
+            <th style="border: none;" colspan="2">Операции</th>
         </thead>
         <?php
         $selectRequests = mysqli_query($connect, "SELECT * FROM `requests`");
         for ($i = 1; $i <= mysqli_num_rows($selectRequests); ++$i) {
             $reqRow = mysqli_fetch_array($selectRequests);
         ?>
-            <tr class="stroka" id="<?php echo $i; ?>">
+            <tr class="stroka" id="<?php echo $reqRow['id']; ?>">
                 <td style="text-align: center; padding: 0 5px;" id="idRequest"><?php echo $reqRow['id']; ?></td>
-                <td style="padding: 0 5px;" id="surname<?php echo $i; ?>"><?php echo $reqRow['user_surname']; ?></td>
-                <td style="padding: 0 5px;" id="name<?php echo $i; ?>"><?php echo $reqRow['user_name']; ?></td>
-                <td style="padding: 0 5px;" id="fatherName<?php echo $i; ?>"><?php echo $reqRow['user_fatherName']; ?></td>
-                <td style="padding: 0 5px;" id="jobPlace<?php echo $i; ?>"><?php echo $reqRow['user_jobPlace']; ?></td>
-                <td style="padding: 0 5px;" id="job<?php echo $i; ?>"><?php echo $reqRow['user_job']; ?></td>
-                <td style="padding: 0 5px;" id="email<?php echo $i; ?>"><?php echo $reqRow['user_email']; ?></td>
-                <td style="padding: 0 5px;" id="date<?php echo $i; ?>"><?php echo $reqRow['date']; ?></td>
-                <td style="border: none;"><button style=" width:250px; border:none;" class="generator" id="<?php echo $i; ?>">Сгенерировать логин и пароль и отправить</button></td>
+                <td style="padding: 0 5px;" id="surname<?php echo $reqRow['id']; ?>"><?php echo $reqRow['user_surname']; ?></td>
+                <td style="padding: 0 5px;" id="name<?php echo $reqRow['id']; ?>"><?php echo $reqRow['user_name']; ?></td>
+                <td style="padding: 0 5px;" id="fatherName<?php echo $reqRow['id']; ?>"><?php echo $reqRow['user_fatherName']; ?></td>
+                <td style="padding: 0 5px;" id="jobPlace<?php echo $reqRow['id']; ?>"><?php echo $reqRow['user_jobPlace']; ?></td>
+                <td style="padding: 0 5px;" id="job<?php echo $reqRow['id']; ?>"><?php echo $reqRow['user_job']; ?></td>
+                <td style="padding: 0 5px;" id="email<?php echo $reqRow['id']; ?>"><?php echo $reqRow['user_email']; ?></td>
+                <td style="padding: 0 5px;" id="date<?php echo $reqRow['id']; ?>"><?php echo $reqRow['date']; ?></td>
+                <td style="border: none;"><button title="Зарегистрировать пользователя" style=" width:100px; border:none; height:100%;" class="generator" id="<?php echo $reqRow['id']; ?>"><img src="./img/letter.svg" id="sendImg" style="object-fit: contain; width:50%; height:50%;"></button></td>
+                <td><button style=" width:100px; border:none; height:50px;" class="deleteRequest" id="<?php echo $reqRow['id']; ?>" title="Отклонить запрос"><img src="./img/pngegg.png" id="sendImg" style="object-fit: contain; width:50%; height:50%;"></button></td>
             </tr>
         <?php } ?>
         <template id="addUser">
@@ -66,7 +67,7 @@ mysqli_query($connect, "SET NAMES UTF8");
             <option value="name">По имени</option>
             <option value="jobPlace">По месту работы</option>
         </select>
-        <button style="margin-left: 20px; height:45px; width:30%;" id="searchUserClearBtn">Сбросить</button>
+        <button style="margin-left: 20px; height:45px; width:10%;" id="searchUserClearBtn" title="Сбросить поиск"><img src="./img/clearString.png" ></button>
     </div>
     <form method="post">
         <div class="scrollTable">

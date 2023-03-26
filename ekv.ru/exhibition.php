@@ -9,7 +9,8 @@ mysqli_query($connect, "SET NAMES UTF8");
 
 $numEx = $_GET['numEx'];
 $root = $_GET['root'];
-$selectExh = mysqli_query($connect, "SELECT * FROM `exhibitions` WHERE `id_user` = '{$_SESSION['user']['id']}' AND `numEx` = '$numEx'") or die("Error select exhibition: " . mysqli_error($connect));
+$composer = $_GET['composer'];
+$selectExh = mysqli_query($connect, "SELECT * FROM `exhibitions` WHERE `id_user` = '$composer' AND `numEx` = '$numEx'") or die("Error select exhibition: " . mysqli_error($connect));
 for ($i = 0; $i < mysqli_num_rows($selectExh); ++$i) {
   $rowExh = mysqli_fetch_array($selectExh);
   $_SESSION['exhib']['title'] = $rowExh['exhibTitle'];
@@ -24,13 +25,23 @@ $_SESSION['numEx'] = $numEx;
 <div class="sitebarButton"><img class="arrow" src="./img/arrowSitebarR.svg" alt=""></div>
 
 <?php
-$selectRazdels = mysqli_query($connect, "SELECT * FROM `razdels` WHERE `id_user` = '{$_SESSION['user']['id']}' AND `numEx` = '$numEx'") or die("Error select razdels: " . mysqli_error($connect));
-$selectExh = mysqli_query($connect, "SELECT * FROM `exhibitions` WHERE `id_user` = '{$_SESSION['user']['id']}' AND `numEx` = '$numEx'") or die("Error select exhibition: " . mysqli_error($connect));
+$selectRazdels = mysqli_query($connect, "SELECT * FROM `razdels` WHERE `id_user` = '$composer' AND `numEx` = '$numEx'") or die("Error select razdels: " . mysqli_error($connect));
+$selectExh = mysqli_query($connect, "SELECT * FROM `exhibitions` WHERE `id_user` = '$composer' AND `numEx` = '$numEx'") or die("Error select exhibition: " . mysqli_error($connect));
 for ($i = 0; $i < mysqli_num_rows($selectExh); ++$i) {
   $rowExh = mysqli_fetch_array($selectExh);
   $_SESSION['ex']['cover'] = $rowExh['cover_path'];
-  $_SESSION['ex']['positionY'] = $rowExh['titlePY'];
-  $_SESSION['ex']['positionX'] = $rowExh['titlePX'];
+  if ($rowExh['titlePY'] == 999999999) {
+    $_SESSION['ex']['positionY'] = "";
+  } else {
+    $_SESSION['ex']['positionY'] = $rowExh['titlePY'];
+  }
+  if ($rowExh['titlePX'] == 999999999) {
+    $_SESSION['ex']['positionX'] = "";
+  } else {
+    $_SESSION['ex']['positionX'] = $rowExh['titlePX'];
+  }
+
+
   $_SESSION['ex']['fontSize'] = $rowExh['titleFontSize'];
   $_SESSION['ex']['bg'] = $rowExh['titleBg'];
   $_SESSION['ex']['height'] = $rowExh['titleHeight'];
@@ -43,6 +54,8 @@ for ($i = 0; $i < mysqli_num_rows($selectExh); ++$i) {
   $_SESSION['ex']['titleItalic'] = $rowExh['titleItalic'];
   $_SESSION['ex']['titleUnderline'] = $rowExh['titleUnderline'];
   $_SESSION['ex']['titleRazdels'] = $rowExh['titleRazdels'];
+  /*   $_SESSION['ex']['height'] = ($_SESSION['ex']['height'] * 1541) / 100;
+  $_SESSION['ex']['width'] = ($_SESSION['ex']['width'] * 1875) / 100; */
 }
 
 for ($i = 0; $i < mysqli_num_rows($selectRazdels); ++$i) {
@@ -154,16 +167,20 @@ for ($i = 0; $i < mysqli_num_rows($selectRazdels); ++$i) {
 
         </div>
 
-        <div class="bg" style="opacity:<?php echo $_SESSION['ex']['opacity'] ?>; background-color:<?php echo $_SESSION['ex']['bg']; ?>; width:<?php echo $_SESSION['ex']['width']; ?>px; heigth:<?php echo $_SESSION['ex']['height']; ?>;top:<?php echo $_SESSION['ex']['positionY']; ?>%; left:<?php echo $_SESSION['ex']['positionX']; ?>%;""></div>
-        
-        <div class=" textareaBoxing" style="width:<?php echo $_SESSION['ex']['width']; ?>px; heigth:<?php echo $_SESSION['ex']['height']; ?>px; top:<?php echo $_SESSION['ex']['positionY']; ?>%; left:<?php echo $_SESSION['ex']['positionX']; ?>%;">
-          <textarea name="title" class="exTitleInput" maxlength="60" style="font-style:'<?php echo $_SESSION['ex']['titleUnderline']; ?>'; font-weight:'<?php echo $_SESSION['ex']['titleBold']; ?>'; font-family: '<?php echo $_SESSION['ex']['fontFamily'] ?>'; color: <?php echo $_SESSION['ex']['fontColor']; ?>; font-size: <?php echo $_SESSION['ex']['fontSize']; ?>px; height:<?php echo $_SESSION['ex']['height']; ?>px; width:<?php echo $_SESSION['ex']['width']; ?>px;"><?php echo $_SESSION['exhib']['title']; ?></textarea>
+        <div class="bg" style="opacity:<?php echo $_SESSION['ex']['opacity'] ?>; background-color:<?php echo $_SESSION['ex']['bg']; ?>; width:<?php echo $_SESSION['ex']['width']; ?>%; heigth:<?php echo $_SESSION['ex']['height']; ?>%;top:<?php echo $_SESSION['ex']['positionY']; ?>%; left:<?php echo $_SESSION['ex']['positionX']; ?>%;"></div>
+
+        <div class=" textareaBoxing" style="display: block; width:<?php echo $_SESSION['ex']['width']; ?>%; heigth:<?php echo $_SESSION['ex']['height']; ?>%; top:<?php echo $_SESSION['ex']['positionY']; ?>%; left:<?php echo $_SESSION['ex']['positionX']; ?>%;">
+          <textarea name="title" class="exTitleInput" style="font-style:'<?php echo $_SESSION['ex']['titleUnderline']; ?>'; font-weight:'<?php echo $_SESSION['ex']['titleBold']; ?>'; font-family: '<?php echo $_SESSION['ex']['fontFamily'] ?>'; color: <?php echo $_SESSION['ex']['fontColor']; ?>; font-size: <?php echo $_SESSION['ex']['fontSize']; ?>vw; "><?php echo $_SESSION['exhib']['title']; ?></textarea>
         </div>
         <input type="text" name="pointX" id="pointX" value="<?php echo $_SESSION['ex']['positionX']; ?>" title="X" style="display: none;">
         <input type="text" name="pointY" id="pointY" value="<?php echo $_SESSION['ex']['positionY']; ?>" title="Y" style="display: none;">
 
       <?php } else { ?>
-        <h1 class="exTitle"><?php echo $title; ?></h1>
+        <div class="bgH1" style="overflow: hidden;opacity:<?php echo $_SESSION['ex']['opacity'] ?>; background-color:<?php echo $_SESSION['ex']['bg']; ?>; width:<?php echo $_SESSION['ex']['width']; ?>%; height:<?php echo $_SESSION['ex']['height']; ?>%;top:<?php echo $_SESSION['ex']['positionY']; ?>%; left:<?php echo $_SESSION['ex']['positionX']; ?>%; position:absolute;"></div>
+        <h1 class="exTitle">
+          <pre style=" overflow: visible;text-align:<?php echo $_SESSION['ex']['align']; ?>; text-decoration:'<?php echo $_SESSION['ex']['titleUnderline']; ?>'; font-weight:'<?php echo $_SESSION['ex']['titleBold']; ?>'; font-family: '<?php echo $_SESSION['ex']['fontFamily'] ?>'; color: <?php echo $_SESSION['ex']['fontColor']; ?>; font-size: <?php echo $_SESSION['ex']['fontSize']; ?>vw; width:<?php echo $_SESSION['ex']['width']; ?>%; height:<?php echo $_SESSION['ex']['height']; ?>%;top:<?php echo $_SESSION['ex']['positionY']; ?>%; left:<?php echo $_SESSION['ex']['positionX']; ?>%; position:absolute; font-style:<?php echo $_SESSION['ex']['titleItalic']; ?>;"><?php echo $title; ?></pre>
+        </h1>
+
       <?php } ?>
 
       <div class="sitebarNav">
@@ -172,9 +189,9 @@ for ($i = 0; $i < mysqli_num_rows($selectRazdels); ++$i) {
           <a href="#navRazd" class="titleRazdelNav">Разделы</a>
           <li class="navItem">
             <a href="#razdelTitle0" class="titleRazdelNav"><?php echo $_SESSION['razdelsNav']['0'] ?></a>
-            <ul class="books">
+            <ul class="booksNav" id="1">
               <?php
-              $selectBooks = mysqli_query($connect, "SELECT * FROM `books` WHERE `id_user` = '{$_SESSION['user']['id']}' AND `numEx` = '$numEx' AND `numRazdel` = '1'") or die("Error select books: " . mysqli_error($connect));
+              $selectBooks = mysqli_query($connect, "SELECT * FROM `books` WHERE `id_user` = '$composer' AND `numEx` = '$numEx' AND `numRazdel` = '1'") or die("Error select books: " . mysqli_error($connect));
               for ($i = 0; $i < mysqli_num_rows($selectBooks); ++$i) {
                 $rowBooksNav = mysqli_fetch_array($selectBooks);
               ?>
@@ -186,10 +203,10 @@ for ($i = 0; $i < mysqli_num_rows($selectRazdels); ++$i) {
           </li>
           <li class="navItem">
             <a href="#razdelTitle1" class="titleRazdelNav"><?php echo $_SESSION['razdelsNav']['1'] ?></a>
-            <ul class="books">
+            <ul class="booksNav" id="2">
 
               <?php
-              $selectBooks = mysqli_query($connect, "SELECT * FROM `books` WHERE `id_user` = '{$_SESSION['user']['id']}' AND `numEx` = '$numEx' AND `numRazdel` = '2'") or die("Error select books: " . mysqli_error($connect));
+              $selectBooks = mysqli_query($connect, "SELECT * FROM `books` WHERE `id_user` = '$composer' AND `numEx` = '$numEx' AND `numRazdel` = '2'") or die("Error select books: " . mysqli_error($connect));
               for ($i = 0; $i < mysqli_num_rows($selectBooks); ++$i) {
                 $rowBooksNav = mysqli_fetch_array($selectBooks);
               ?>
@@ -201,9 +218,9 @@ for ($i = 0; $i < mysqli_num_rows($selectRazdels); ++$i) {
           </li>
           <li class="navItem">
             <a href="#razdelTitle2" class="titleRazdelNav"><?php echo $_SESSION['razdelsNav']['2'] ?></a>
-            <ul class="books">
+            <ul class="booksNav" id="3">
               <?php
-              $selectBooks = mysqli_query($connect, "SELECT * FROM `books` WHERE `id_user` = '{$_SESSION['user']['id']}' AND `numEx` = '$numEx' AND `numRazdel` = '3'") or die("Error select books: " . mysqli_error($connect));
+              $selectBooks = mysqli_query($connect, "SELECT * FROM `books` WHERE `id_user` = '$composer' AND `numEx` = '$numEx' AND `numRazdel` = '3'") or die("Error select books: " . mysqli_error($connect));
               for ($i = 0; $i < mysqli_num_rows($selectBooks); ++$i) {
                 $rowBooksNav = mysqli_fetch_array($selectBooks);
               ?>
@@ -222,7 +239,7 @@ for ($i = 0; $i < mysqli_num_rows($selectRazdels); ++$i) {
     <?php } ?>
   </div>
   <?php
-  $selectRazdelsTitle = mysqli_query($connect, "SELECT * FROM `exhibitions` WHERE `id_user` = '{$_SESSION['user']['id']}' AND `numEx` = '$numEx'") or die("Error select razdels: " . mysqli_error($connect));
+  $selectRazdelsTitle = mysqli_query($connect, "SELECT * FROM `exhibitions` WHERE `id_user` = '$composer' AND `numEx` = '$numEx'") or die("Error select razdels: " . mysqli_error($connect));
 
   $rowRazdelsTitle = mysqli_fetch_array($selectRazdelsTitle);
   $_SESSION['razdels']['titleT'] = $rowRazdelsTitle['titleRazdels'];
@@ -243,8 +260,12 @@ for ($i = 0; $i < mysqli_num_rows($selectRazdels); ++$i) {
   ?>
 
 
-  <div class="razdelsMenu" data-bgblock="<?php echo $_SESSION['razdels']['propBgBlock']; ?>" style="position: relative; background-color:<?php echo $_SESSION['razdels']['propBgBlock']; ?>;">
-    <div class="btnChangeBg" style="margin-left: 35px;">Изменить цвет фона</div>
+  <div class="razdelsMenu" data-bgblock="<?php echo $_SESSION['razdels']['propBgBlock']; ?>" style="position: relative; background-color:<?php echo $_SESSION['razdels']['propBgBlock']; ?>; <?php if ($root == 0) {
+                                                                                                                                                                                                echo "padding-top: 10vh;";
+                                                                                                                                                                                              } ?>">
+    <?php if ($root == 1) { ?>
+      <div class="btnChangeBg" style="margin-left: 35px;">Изменить цвет фона</div>
+    <?php } ?>
 
     <input type="text" name="pointX1" id="pointX1" value="<?php echo $_SESSION['razdels']["$i"]['razdelPositionX']; ?>" title="X" style=" display:none;position:absolute; top:0; left:0;">
     <input type="text" name="pointY1" id="pointY1" value="<?php echo $_SESSION['razdels']["$i"]['razdelPositionY']; ?>" title="Y" style="display:none;position:absolute; top:0; left:150px;">
@@ -310,7 +331,7 @@ for ($i = 0; $i < mysqli_num_rows($selectRazdels); ++$i) {
               <option value="Rubik Mono One" class="inputFontFamily2" style="font-family: 'Rubik Mono One';">Rubik Mono One</option>
               <option value="Russo One" class="inputFontFamily2" style="font-family: 'Russo One';">Russo One</option>
             </select>
-            <div class="dropdown" title="Фигура">
+            <!-- <div class="dropdown" title="Фигура">
               <button class="dropdown-toggle textDecorBtn2" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false" style="width:auto;">Выбрать фигуру</button>
               <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1" style="width: auto;">
                 <li class="dropdown-item dropdown-item3" style="height:100px; color:white;" id="rectangle">
@@ -330,22 +351,23 @@ for ($i = 0; $i < mysqli_num_rows($selectRazdels); ++$i) {
                 </li>
               </ul>
             </div>
-            <input type="text" name="figure" id="figure" style="display: none;">
+            <input type="text" name="figure" id="figure" style="display: none;"> -->
           </div>
         </div>
 
 
         <div class="textareaBoxingRazdels" data-razdels="title" style="z-index:-10000;">
-          <textarea name="titleRazdels" id="titleRazdels" style='max-height: 250px; height: <?php echo $_SESSION['razdels']['razdelHeightT']; ?>px; width: <?php echo $_SESSION['razdels']['razdelWidthT']; ?>px; font-family:<?php echo $_SESSION['razdels']['razdelFontFamilyT']; ?>; text-decoration: <?php echo $_SESSION['razdels']['razdelTextDecorationT']; ?>; font-style: <?php echo $_SESSION['razdels']['razdelFontStyleT']; ?>; font-weight: <?php echo $_SESSION['razdels']['razdelFontWeightT']; ?>; text-align: <?php echo $_SESSION['razdels']['razdelTextAlignT']; ?>; font-size:<?php echo $_SESSION['razdels']['razdelFontSizeT']; ?>px; color:<?php echo $_SESSION['razdels']['razdelFontColorT']; ?>;' data-clr="<?php echo $_SESSION['razdels']['razdelFontColorT']; ?>"><?php echo $_SESSION['razdels']['titleT']; ?></textarea>
-          <div class="bgRazdelsTitle" style="max-height: 250px; background-color: <?php echo $_SESSION['razdels']['razdelBgT']; ?>;  height: <?php echo $_SESSION['razdels']['razdelHeightT']; ?>px; width: <?php echo $_SESSION['razdels']['razdelWidthT']; ?>px; opacity: <?php echo $_SESSION['razdels']['razdelOpacityT']; ?>;" data-bgr="<?php echo $_SESSION['razdels']['razdelBgT']; ?>"></div>
+          <textarea name="titleRazdels" id="titleRazdels" data-bgr="<?php echo $_SESSION['razdels']['razdelBgT']; ?>" style='background-color: <?php echo $_SESSION['razdels']['razdelBgT']; ?>; height: <?php echo $_SESSION['razdels']['razdelHeightT']; ?>vh; width: <?php echo $_SESSION['razdels']['razdelWidthT']; ?>vw; font-family:<?php echo $_SESSION['razdels']['razdelFontFamilyT']; ?>; text-decoration: <?php echo $_SESSION['razdels']['razdelTextDecorationT']; ?>; font-style: <?php echo $_SESSION['razdels']['razdelFontStyleT']; ?>; font-weight: <?php echo $_SESSION['razdels']['razdelFontWeightT']; ?>; text-align: <?php echo $_SESSION['razdels']['razdelTextAlignT']; ?>; font-size:<?php echo $_SESSION['razdels']['razdelFontSizeT']; ?>vh; color:<?php echo $_SESSION['razdels']['razdelFontColorT']; ?>;' data-clr="<?php echo $_SESSION['razdels']['razdelFontColorT']; ?>"><?php echo $_SESSION['razdels']['titleT']; ?></textarea>
         </div>
       <?php } else { ?>
-        <h1 class="pageTitle" id="titlePageRazdel">Разделы</h1>
+        <div class="textareaBoxingRazdels" data-razdels="title" style="z-index:-10000;">
+          <h1 class="pageTitle" id="titlePageRazdel" style="max-height:20vh; background-color: <?php echo $_SESSION['razdels']['razdelBgT']; ?>; height: <?php echo $_SESSION['razdels']['razdelHeightT']; ?>vh; width: <?php echo $_SESSION['razdels']['razdelWidthT']; ?>vw; font-family:<?php echo $_SESSION['razdels']['razdelFontFamilyT']; ?>; text-decoration: <?php echo $_SESSION['razdels']['razdelTextDecorationT']; ?>; font-style: <?php echo $_SESSION['razdels']['razdelFontStyleT']; ?>; font-weight: <?php echo $_SESSION['razdels']['razdelFontWeightT']; ?>; text-align: <?php echo $_SESSION['razdels']['razdelTextAlignT']; ?>; font-size:<?php echo $_SESSION['razdels']['razdelFontSizeT']; ?>vw; color:<?php echo $_SESSION['razdels']['razdelFontColorT']; ?>;"><?php echo $_SESSION['razdels']['titleT']; ?></h1>
+        </div>
       <?php } ?>
       <div class="warning2 alert alert-info"></div>
       <div class="razdelMenuButonns">
         <?php
-        $selectRazdels = mysqli_query($connect, "SELECT * FROM `razdels` WHERE `id_user` = '{$_SESSION['user']['id']}' AND `numEx` = '$numEx'") or die("Error select razdels: " . mysqli_error($connect));
+        $selectRazdels = mysqli_query($connect, "SELECT * FROM `razdels` WHERE `id_user` = '$composer' AND `numEx` = '$numEx'") or die("Error select razdels: " . mysqli_error($connect));
         for ($i = 0; $i < mysqli_num_rows($selectRazdels); ++$i) {
           $rowRazdels = mysqli_fetch_array($selectRazdels);
           $_SESSION['razdels']["$i"]['title'] = $rowRazdels['titleRazdel'];
@@ -361,8 +383,9 @@ for ($i = 0; $i < mysqli_num_rows($selectRazdels); ++$i) {
           $_SESSION['razdels']["$i"]['razdelTextDecoration'] = $rowRazdels['razdelTextDecoration'];
           $_SESSION['razdels']["$i"]['razdelFontFamily'] = $rowRazdels['razdelFontFamily'];
           $_SESSION['razdels']["$i"]['razdelBorderRadius'] = $rowRazdels['razdelBorderRadius'];
-          $_SESSION['razdels']["$i"]['razdelPositionX'] = $rowRazdels['positionX'];
-          $_SESSION['razdels']["$i"]['razdelPositionY'] = $rowRazdels['positionY'];
+          $_SESSION['razdels']["$i"]['cover'] = $rowRazdels['cover'];
+          //for vertical align in container td
+          $_SESSION['razdels']["$i"]['align'] = $rowRazdels['align'];
           if ($_SESSION['razdels']["$i"]['razdelPositionX'] != '') {
             $position = 'absolute';
           } else {
@@ -373,20 +396,102 @@ for ($i = 0; $i < mysqli_num_rows($selectRazdels); ++$i) {
 
           <div class="razdelMenuButton" id="<?php echo $i + 1; ?>" style="/* width:388px; height:432px; */">
             <!-- <div class="razdelMenuBG" id="<?php echo $i + 1; ?>" style="border-radius:0px;"></div> -->
-            <div class="razdelMenuImg">
+            <!-- <div class="razdelMenuImg">
               <img src="<?php echo $_SESSION['ex']['cover']; ?>" alt="" class="razdImg" id='<?php echo $i + 1; ?>' style="border-radius:0px;">
-            </div>
+            </div> -->
             <?php
             if ($root == 1) { ?>
               <!-- bgRazdels -->
-              <div style="top: <?php echo $_SESSION['razdels']["$i"]['razdelPositionY']; ?>%; left: <?php echo $_SESSION['razdels']["$i"]['razdelPositionX']; ?>%; border-radius:<?php echo $_SESSION['razdels']["$i"]['razdelBorderRadius'] ?>; height: <?php echo $_SESSION['razdels']["$i"]['razdelHeight']; ?>px; width:<?php echo $_SESSION['razdels']["$i"]['razdelWidth']; ?>px; opacity:<?php echo $_SESSION['razdels']["$i"]['razdelOpacity']; ?>; background-color:<?php echo $_SESSION['razdels']["$i"]['razdelBg']; ?>;" class="bgRazdels" id="<?php echo $i + 1; ?>" data-bgr1="<?php echo  $_SESSION['razdels']["$i"]['razdelBg']; ?>"></div>
-              <!-- razdTitleInput -->
+              <div class="selectPlace">
+                <div class="radio">
+                  <div class="forRadio" name="r<?php echo $i + 1; ?>" id="1" onmouseover="if(this.style.backgroundColor != 'rgb(201, 103, 1)'){this.style.backgroundColor = '#a2a2a2'} else {this.style.backgroundColor = '#c96701'}" onmouseout="if(this.style.backgroundColor=='rgb(162, 162, 162)'){ this.style.backgroundColor='white'}"></div>
+                  <div class="forRadio" name="r<?php echo $i + 1; ?>" id="2" onmouseover="if(this.style.backgroundColor != 'rgb(201, 103, 1)'){this.style.backgroundColor = '#a2a2a2'} else {this.style.backgroundColor = '#c96701'}" onmouseout="if(this.style.backgroundColor=='rgb(162, 162, 162)'){ this.style.backgroundColor='white'}"></div>
+                  <div class="forRadio" name="r<?php echo $i + 1; ?>" id="3" onmouseover="if(this.style.backgroundColor != 'rgb(201, 103, 1)'){this.style.backgroundColor = '#a2a2a2'} else {this.style.backgroundColor = '#c96701'}" onmouseout="if(this.style.backgroundColor=='rgb(162, 162, 162)'){ this.style.backgroundColor='white'}"></div>
+                  <input type="radio" name="r<?php echo $i + 1; ?>" id="razdel<?php echo $i + 1; ?>Radio1" value="topLeft">
+                  <input type="radio" name="r<?php echo $i + 1; ?>" id="razdel<?php echo $i + 1; ?>Radio2" value="topCenter">
+                  <input type="radio" name="r<?php echo $i + 1; ?>" id="razdel<?php echo $i + 1; ?>Radio3" value="topRight">
+                </div>
+                <div class="radio">
+                  <div class="forRadio" name="r<?php echo $i + 1; ?>" id="4" onmouseover="if(this.style.backgroundColor != 'rgb(201, 103, 1)'){this.style.backgroundColor = '#a2a2a2'} else {this.style.backgroundColor = '#c96701'}" onmouseout="if(this.style.backgroundColor=='rgb(162, 162, 162)'){ this.style.backgroundColor='white'}"></div>
+                  <div class="forRadio" name="r<?php echo $i + 1; ?>" id="5" onmouseover="if(this.style.backgroundColor != 'rgb(201, 103, 1)'){this.style.backgroundColor = '#a2a2a2'} else {this.style.backgroundColor = '#c96701'}" onmouseout="if(this.style.backgroundColor=='rgb(162, 162, 162)'){ this.style.backgroundColor='white'}"></div>
+                  <div class="forRadio" name="r<?php echo $i + 1; ?>" id="6" onmouseover="if(this.style.backgroundColor != 'rgb(201, 103, 1)'){this.style.backgroundColor = '#a2a2a2'} else {this.style.backgroundColor = '#c96701'}" onmouseout="if(this.style.backgroundColor=='rgb(162, 162, 162)'){ this.style.backgroundColor='white'}"></div>
+                  <input type="radio" name="r<?php echo $i + 1; ?>" id="razdel<?php echo $i + 1; ?>Radio4" value="middleLeft">
+                  <input type="radio" name="r<?php echo $i + 1; ?>" id="razdel<?php echo $i + 1; ?>Radio5" value="middleCenter">
+                  <input type="radio" name="r<?php echo $i + 1; ?>" id="razdel<?php echo $i + 1; ?>Radio6" value="middleRight">
+                </div>
+                <div class="radio">
+                  <div class="forRadio" name="r<?php echo $i + 1; ?>" id="7" onmouseover="if(this.style.backgroundColor != 'rgb(201, 103, 1)'){this.style.backgroundColor = '#a2a2a2'} else {this.style.backgroundColor = '#c96701'}" onmouseout="if(this.style.backgroundColor=='rgb(162, 162, 162)'){ this.style.backgroundColor='white'}"></div>
+                  <div class="forRadio" name="r<?php echo $i + 1; ?>" id="8" onmouseover="if(this.style.backgroundColor != 'rgb(201, 103, 1)'){this.style.backgroundColor = '#a2a2a2'} else {this.style.backgroundColor = '#c96701'}" onmouseout="if(this.style.backgroundColor=='rgb(162, 162, 162)'){ this.style.backgroundColor='white'}"></div>
+                  <div class="forRadio" name="r<?php echo $i + 1; ?>" id="9" onmouseover="if(this.style.backgroundColor != 'rgb(201, 103, 1)'){this.style.backgroundColor = '#a2a2a2'} else {this.style.backgroundColor = '#c96701'}" onmouseout="if(this.style.backgroundColor=='rgb(162, 162, 162)'){ this.style.backgroundColor='white'}"></div>
+                  <input type="radio" name="r<?php echo $i + 1; ?>" id="razdel<?php echo $i + 1; ?>Radio7" value="bottomLeft">
+                  <input type="radio" name="r<?php echo $i + 1; ?>" id="razdel<?php echo $i + 1; ?>Radio8" value="bottomCenter">
+                  <input type="radio" name="r<?php echo $i + 1; ?>" id="razdel<?php echo $i + 1; ?>Radio9" value="bottomRight">
+                </div>
+              </div><?php } ?>
+            <table class="tableRazdel" id="<?php echo $i + 1; ?>" data-bgrT="" style="<?php if ($_SESSION['razdels']["$i"]['cover'] != "") {
+                                                                                        echo "background-image: url({$_SESSION['razdels']["$i"]['cover']});";
+                                                                                      } ?>">
+              <tr>
+                <td id="razdel<?php echo $i + 1; ?>" data-align="<?php echo $_SESSION['razdels']["$i"]['align']; ?>" style="position:relative;<?php
+                                                                                                                                              if ($_SESSION['razdels']["$i"]['align'] == "topLeft") {
+                                                                                                                                                echo "vertical-align:top;";
+                                                                                                                                                $margin = "margin-right: auto;";
+                                                                                                                                              } else {
+                                                                                                                                                if ($_SESSION['razdels']["$i"]['align'] == "topCenter") {
+                                                                                                                                                  echo "vertical-align:top;";
+                                                                                                                                                  $margin = "margin:0 auto;";
+                                                                                                                                                } else {
+                                                                                                                                                  if ($_SESSION['razdels']["$i"]['align'] == "topRight") {
+                                                                                                                                                    echo "vertical-align:top;";
+                                                                                                                                                    $margin = "margin-left: auto;";
+                                                                                                                                                  } else {
+                                                                                                                                                    if ($_SESSION['razdels']["$i"]['align'] == "middleLeft") {
+                                                                                                                                                      echo "vertical-align:middle;";
+                                                                                                                                                      $margin = "margin-right: auto;";
+                                                                                                                                                    } else {
+                                                                                                                                                      if ($_SESSION['razdels']["$i"]['align'] == "middleCenter") {
+                                                                                                                                                        echo "vertical-align:middle;";
+                                                                                                                                                        $margin = "margin:0 auto;";
+                                                                                                                                                      } else {
+                                                                                                                                                        if ($_SESSION['razdels']["$i"]['align'] == "middleRight") {
+                                                                                                                                                          echo "vertical-align:middle;";
+                                                                                                                                                          $margin = "margin-left: auto;";
+                                                                                                                                                        } else {
+                                                                                                                                                          if ($_SESSION['razdels']["$i"]['align'] == "bottomLeft") {
+                                                                                                                                                            echo "vertical-align:bottom;";
+                                                                                                                                                            $margin = "margin-right: auto;";
+                                                                                                                                                          } else {
+                                                                                                                                                            if ($_SESSION['razdels']["$i"]['align'] == "bottomCenter") {
+                                                                                                                                                              echo "vertical-align:bottom;";
+                                                                                                                                                              $margin = "margin:0 auto;";
+                                                                                                                                                            } else {
+                                                                                                                                                              if ($_SESSION['razdels']["$i"]['align'] == "bottomRight") {
+                                                                                                                                                                echo "vertical-align:bottom;";
+                                                                                                                                                                $margin = "margin-left: auto;";
+                                                                                                                                                              }
+                                                                                                                                                            }
+                                                                                                                                                          }
+                                                                                                                                                        }
+                                                                                                                                                      }
+                                                                                                                                                    }
+                                                                                                                                                  }
+                                                                                                                                                }
+                                                                                                                                              } ?>">
+                  <?php if ($root == 1) { ?>
+                    <div class="bgCell" id="<?php echo $i + 1; ?>" data-bgr1="<?php echo $_SESSION['razdels']["$i"]['razdelBg']; ?>" style="<?php echo $margin; ?> background-color: <?php echo $_SESSION['razdels']["$i"]['razdelBg']; ?>; height:<?php echo $_SESSION['razdels']["$i"]['razdelHeight']; ?>vh; width:<?php echo $_SESSION['razdels']["$i"]['razdelWidth']; ?>vw; opacity:<?php echo $_SESSION['razdels']["$i"]['razdelOpacity']; ?>;">
+                      <textarea class="cellTextarea" id="<?php echo $i + 1; ?>" wrap="soft" data-clr2="<?php echo $_SESSION['razdels']["$i"]['razdelFontColor']; ?>" style='white-space:wrap; height:<?php echo $_SESSION['razdels']["$i"]['razdelHeight']; ?>vh; width:<?php echo $_SESSION['razdels']["$i"]['razdelWidth']; ?>vw; font-size:<?php echo $_SESSION['razdels']["$i"]['razdelFontSize']; ?>vw; color:<?php echo $_SESSION['razdels']["$i"]['razdelFontColor']; ?>; font-weight: <?php echo  $_SESSION['razdels']["$i"]['razdelFontWeight']; ?>; font-style:<?php echo  $_SESSION['razdels']["$i"]['razdelFontStyle']; ?>; text-decoration: <?php echo $_SESSION['razdels']["$i"]['razdelTextDecoration']; ?>; font-family:<?php echo $_SESSION['razdels']["$i"]['razdelFontFamily']; ?>; text-align:<?php echo $_SESSION['razdels']["$i"]['razdelTextAlign']; ?>;'><?php echo $_SESSION['razdels']["$i"]['title']; ?></textarea>
+                    </div>
+                  <?php } else { ?>
+                    <div class="bgCell" id="<?php echo $i + 1; ?>" data-bgr1="<?php echo $_SESSION['razdels']["$i"]['razdelBg']; ?>" style="<?php echo $margin; ?> background-color: <?php echo $_SESSION['razdels']["$i"]['razdelBg']; ?>; height:<?php echo $_SESSION['razdels']["$i"]['razdelHeight']; ?>vh; width:<?php echo $_SESSION['razdels']["$i"]['razdelWidth']; ?>vw; opacity:<?php echo $_SESSION['razdels']["$i"]['razdelOpacity']; ?>;">
+                      <a href="#razdelTitle<?php echo $i; ?>" class="nameRazd" style='white-space:wrap; height:<?php echo $_SESSION['razdels']["$i"]['razdelHeight']; ?>vh; width:<?php echo $_SESSION['razdels']["$i"]['razdelWidth']; ?>vw; font-size:<?php echo $_SESSION['razdels']["$i"]['razdelFontSize']; ?>vw; color:<?php echo $_SESSION['razdels']["$i"]['razdelFontColor']; ?>; font-weight: <?php echo  $_SESSION['razdels']["$i"]['razdelFontWeight']; ?>; font-style:<?php echo  $_SESSION['razdels']["$i"]['razdelFontStyle']; ?>; text-decoration: <?php echo $_SESSION['razdels']["$i"]['razdelTextDecoration']; ?>; font-family:<?php echo $_SESSION['razdels']["$i"]['razdelFontFamily']; ?>; text-align:<?php echo $_SESSION['razdels']["$i"]['razdelTextAlign']; ?>;'><?php echo $_SESSION['razdels']["$i"]['title']; ?></a>
+                    </div>
+                  <?php }
+                  ?>
+                </td>
+              </tr>
+            </table>
 
-              <textarea style="z-index:1000000; position:absolute; top: <?php echo $_SESSION['razdels']["$i"]['razdelPositionY']; ?>%; left: <?php echo $_SESSION['razdels']["$i"]['razdelPositionX']; ?>%; border-radius:<?php echo $_SESSION['razdels']["$i"]['razdelBorderRadius'] ?>; height: <?php echo $_SESSION['razdels']["$i"]['razdelHeight']; ?>px; width:<?php echo $_SESSION['razdels']["$i"]['razdelWidth']; ?>px; font-size:<?php echo $_SESSION['razdels']["$i"]['razdelFontSize']; ?>px ; font-family:<?php echo $_SESSION['razdels']["$i"]['razdelFontFamily']; ?>; text-align: <?php echo $_SESSION['razdels']["$i"]['razdelTextAlign']; ?>; color:<?php echo $_SESSION['razdels']["$i"]['razdelFontColor']; ?>; font-weight: <?php echo $_SESSION['razdels']["$i"]['razdelFontWeight']; ?>; font-style: <?php echo $_SESSION['razdels']["$i"]['razdelFontStyle']; ?>; text-decoration: <?php echo $_SESSION['razdels']["$i"]['razdelTextDecoration']; ?>;" name="titleRazdel<?php echo $i; ?>" class="razdTitleInput razdelItem item<?php echo $i; ?>" maxlength="35" id="<?php echo $i; ?>" data-clr2="<?php echo $_SESSION['razdels']["$i"]['razdelFontColor']; ?>"><?php echo $_SESSION['razdels']["$i"]['title']; ?></textarea>
-            <?php } else { ?>
-              <a href="#razdelTitle<?php echo $i; ?>" class="nameRazd"><?php echo $_SESSION['razdels']["$i"]['title']; ?></a>
-            <?php }
-            ?>
+
 
           </div>
         <?php } ?>
@@ -398,7 +503,7 @@ for ($i = 0; $i < mysqli_num_rows($selectRazdels); ++$i) {
 
   </div>
   <?php
-  $selectRazdels = mysqli_query($connect, "SELECT * FROM `razdels` WHERE `id_user` = '{$_SESSION['user']['id']}' AND `numEx` = '$numEx'") or die("Error select razdels: " . mysqli_error($connect));
+  $selectRazdels = mysqli_query($connect, "SELECT * FROM `razdels` WHERE `id_user` = '$composer' AND `numEx` = '$numEx'") or die("Error select razdels: " . mysqli_error($connect));
 
   for ($i = 0; $i < mysqli_num_rows($selectRazdels); ++$i) {
     $rowRazdels = mysqli_fetch_array($selectRazdels);
@@ -410,7 +515,7 @@ for ($i = 0; $i < mysqli_num_rows($selectRazdels); ++$i) {
     }
   ?>
 
-    <div class="razdel" id="<?php echo $i + 1; ?>" style="background-color: <?php echo $style; ?>;">
+    <div class="razdel" id="<?php echo $i + 1; ?>" style="background-color: <?php echo $_SESSION['razdels']['propBgBlock']; ?>;">
       <div class="modalkAddBo">
         <div class="board">
           <div class="header_modal">
@@ -429,11 +534,11 @@ for ($i = 0; $i < mysqli_num_rows($selectRazdels); ++$i) {
           <input type="text" class="hiddenInput" value="<?php echo $i + 1; ?>" id="<?php echo $i + 1 ?>" disabled="true">
         <?php } ?>
 
-        <h1 class="razdelTitle" id="razdelTitle<?php echo $i; ?>"><?php echo $_SESSION['razdels']["$i"]['title']; ?></h1>
+        <h1 class="razdelTitle" id="razdelTitle<?php echo $i; ?>" style="color:<?php echo $_SESSION['razdels']['razdelFontColorT']; ?>;"><?php echo $_SESSION['razdels']["$i"]['title']; ?></h1>
         <div class="books">
           <?php
           $k = $i + 1;
-          $selectBooks = mysqli_query($connect, "SELECT * FROM `books` WHERE `id_user` = '{$_SESSION['user']['id']}' AND `numEx` = '$numEx' AND `numRazdel` = '$k'") or die("Error select books: " . mysqli_error($connect));
+          $selectBooks = mysqli_query($connect, "SELECT * FROM `books` WHERE `id_user` = '$composer' AND `numEx` = '$numEx' AND `numRazdel` = '$k'") or die("Error select books: " . mysqli_error($connect));
 
 
           for ($j = 0; $j < 15; ++$j) {
@@ -480,171 +585,194 @@ for ($i = 0; $i < mysqli_num_rows($selectRazdels); ++$i) {
 
 
 
-    <div class="desc" style="background-color: <?php echo $style; ?>;">
+    <div class="desc" style="background-color:<?php echo $_SESSION['razdels']['propBgBlock']; ?>;">
       <?php
 
 
-      $selectBooks = mysqli_query($connect, "SELECT * FROM `books` WHERE `id_user` = '{$_SESSION['user']['id']}' AND `numEx` = '$numEx' AND `numRazdel` = '$k'") or die("Error select books2: " . mysqli_error($connect));
+      $selectBooks = mysqli_query($connect, "SELECT * FROM `books` WHERE `id_user` = '$composer' AND `numEx` = '$numEx' AND `numRazdel` = '$k'") or die("Error select books2: " . mysqli_error($connect));
       for ($r = 0; $r < 15; ++$r) {
         $rowBooks2 = mysqli_fetch_array($selectBooks);
       ?>
-
-        <div class="bookDesc<?php echo $koff; ?> bookDescNone<?php echo $i + 1; ?>" id="<?php echo $r; ?>">
-          <span id="razdel<?php echo $i + 1 ?>Book<?php echo $r; ?>" style="position:absolute; top:0; left:0;"></span>
-          <div class="bookCover">
-            <?php if ($root == 1) { ?>
-              <div class="fishTextDesc<?php echo $koff; ?> fishTextDescNone<?php echo $i + 1; ?>" style="display:<?php echo  $display; ?>;" id="<?php echo $r; ?>"><span class="fishSpanDesc<?php echo $koff; ?> fishSpanDescNone<?php echo $i + 1; ?>" id="<?php echo $r; ?>" data-razdel="<? echo $i + 1; ?>"><?php echo  $rowBooks2['img']; ?></span></div>
-            <?php } ?>
-            <img src="<?php echo  $rowBooks2['img']; ?>" alt="<?php echo $rowBooks2['titleBook']; ?>" class="imgForDesc<?php echo $koff; ?> imgForDescNone<?php echo $i + 1; ?>" id="<?php echo $r; ?>">
-          </div>
-
-          <div class="description">
-            <?php if ($root == 1) { ?>
-              <form action="" method="post">
-
+  
+          <div class="bookDesc<?php echo $koff; ?> bookDescNone<?php echo $i + 1; ?>" id="<?php echo $r; ?>" >
+            <span id="razdel<?php echo $i + 1 ?>Book<?php echo $r; ?>" style="position:absolute; top:0; left:0;"></span>
+            <div class="bookCover">
+              <?php if ($root == 1) { ?>
+                <div class="fishTextDesc<?php echo $koff; ?> fishTextDescNone<?php echo $i + 1; ?>" style="display:<?php echo  $display; ?>;" id="<?php echo $r; ?>"><span class="fishSpanDesc<?php echo $koff; ?> fishSpanDescNone<?php echo $i + 1; ?>" id="<?php echo $r; ?>" data-razdel="<? echo $i + 1; ?>"><?php echo  $rowBooks2['img']; ?></span></div>
               <?php } ?>
-              <?php if ($root != 1) { ?>
-                <h1 class="titleDescription<?php echo $koff; ?> titleDescriptionNone<?php echo $i + 1; ?>"><?php echo $rowBooks2['titleBook'] ?></h1>
-                <h3 class="author authorNone<?php echo $i + 1; ?>"><?php echo $rowBooks2['authorName']; ?> <?php echo $rowBooks2['authorFamil'] ?></h3>
-              <?php } ?>
+              <img src="<?php echo  $rowBooks2['img']; ?>" alt="<?php echo $rowBooks2['titleBook']; ?>" class="imgForDesc<?php echo $koff; ?> imgForDescNone<?php echo $i + 1; ?>" id="<?php echo $r; ?>">
+            </div>
+
+            <div class="description">
+              <?php if ($root == 1) { ?>
+                <form action="" method="post">
+
+                <?php } ?>
+                <?php if ($root != 1) { ?>
+                  <h1 class="titleDescription<?php echo $koff; ?> titleDescriptionNone<?php echo $i + 1; ?>"><?php echo $rowBooks2['titleBook'] ?></h1>
+                  <h3 class="author authorNone<?php echo $i + 1; ?>"><?php echo $rowBooks2['authorName']; ?> <?php echo $rowBooks2['authorFamil'] ?></h3>
+                <?php } ?>
 
 
-              <div class="bo<?php echo $koff; ?> boNone<?php echo $i + 1; ?>">
+                <div class="bo<?php echo $koff; ?> boNone<?php echo $i + 1; ?>">
 
-                <?php
-                if ($root == 1) { ?>
+                  <?php
+                  if ($root == 1) { ?>
 
-                  <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="floatingInput1" name="authorFamilBo" value="<?php echo $rowBooks2['authorFamil']; ?>" style="width:max-content;" data-razdel="<?php echo $i + 1; ?>" data-numbook="<?php echo $r + 1; ?>">
-                    <label for="floatingInput1">Фамилия автора</label>
-                  </div>
-
-                  <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="floatingInput2" name="authorNameBo" value="<?php echo $rowBooks2['authorName']; ?>" style="width:auto;" data-razdel="<?php echo $i + 1; ?>" data-numbook="<?php echo $r + 1; ?>">
-                    <label for="floatingInput2">Имя автора</label>
-                  </div>
-
-                  <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="floatingInput1" name="authorFathernameBo" value="<?php echo $rowBooks2['fatherName']; ?>" style="width:auto;" data-razdel="<?php echo $i + 1; ?>" data-numbook="<?php echo $r + 1; ?>">
-                    <label for="floatingInput1">Отчество автора</label>
-                  </div>
-
-                  <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="floatingInput3" name="titleBookBo" value="<?php echo $rowBooks2['titleBook'] ?>" data-razdel="<?php echo $i + 1; ?>" data-numbook="<?php echo $r + 1; ?>">
-                    <label for="floatingInput3">Заглавие</label>
-                  </div>
-                  <div class="redactBoInp">
                     <div class="form-floating mb-3">
-                      <input type="text" class="form-control" id="floatingInput4" name="textFactsBo" value="<?php echo $rowBooks2['textFacts']; ?>" style="display:inline; width:334px;" data-razdel="<?php echo $i + 1; ?>" data-numbook="<?php echo $r + 1; ?>">
-                      <label for="floatingInput4">Сведения относящиеся к заглавию</label>
+                      <input type="text" class="form-control" id="floatingInput21" name="authorFamilBo" value="<?php echo $rowBooks2['authorFamil']; ?>" style="width:max-content;" data-razdel="<?php echo $i + 1; ?>" data-numbook="<?php echo $r + 1; ?>">
+                      <label for="floatingInput21">Фамилия автора</label>
                     </div>
+
+                    <div class="form-floating mb-3">
+                      <input type="text" class="form-control" id="floatingInput2" name="authorNameBo" value="<?php echo $rowBooks2['authorName']; ?>" style="width:auto;" data-razdel="<?php echo $i + 1; ?>" data-numbook="<?php echo $r + 1; ?>">
+                      <label for="floatingInput2">Имя автора</label>
+                    </div>
+
+                    <div class="form-floating mb-3">
+                      <input type="text" class="form-control" id="floatingInput1" name="authorFathernameBo" value="<?php echo $rowBooks2['fatherName']; ?>" style="width:auto;" data-razdel="<?php echo $i + 1; ?>" data-numbook="<?php echo $r + 1; ?>">
+                      <label for="floatingInput1">Отчество автора</label>
+                    </div>
+
+                    <div class="form-floating mb-3">
+                      <input type="text" class="form-control" id="floatingInput3" name="titleBookBo" value="<?php echo $rowBooks2['titleBook'] ?>" data-razdel="<?php echo $i + 1; ?>" data-numbook="<?php echo $r + 1; ?>">
+                      <label for="floatingInput3">Заглавие</label>
+                    </div>
+                    <div class="redactBoInp">
+                      <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="floatingInput4" name="textFactsBo" value="<?php echo $rowBooks2['textFacts']; ?>" style="display:inline; width:334px;" data-razdel="<?php echo $i + 1; ?>" data-numbook="<?php echo $r + 1; ?>">
+                        <label for="floatingInput4">Сведения относящиеся к заглавию</label>
+                      </div>
+                    </div>
+                    <div class="form-floating mb-3">
+                      <input type="text" class="form-control" id="floatingInput30" name="izdanieFactsBo" value="<?php echo $rowBooks2['izdanieFacts'] ?>" data-razdel="<?php echo $i + 1; ?>" data-numbook="<?php echo $r + 1; ?>">
+                      <label for="floatingInput30">Сведения об издании</label>
+                    </div>
+                    <?php if ($rowBooks2['composite'] == 1) { ?>
+                      <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="floatingInput20" name="textSourceBo" value="<?php echo $rowBooks2['source'] ?>" data-razdel="<?php echo $i + 1; ?>" data-numbook="<?php echo $r + 1; ?>">
+                        <label for="floatingInput120">Сведения об источнике</label>
+                      </div>
+                    <?php } ?>
+
+                    <div class="form-floating mb-3">
+                      <input type="text" class="form-control" id="floatingInput5" name="cityBo" value="<?php echo $rowBooks2['city'] ?>" data-razdel="<?php echo $i + 1; ?>" data-numbook="<?php echo $r + 1; ?>">
+                      <label for="floatingInput5">Город издания</label>
+                    </div>
+
+                    <div class="form-floating mb-3">
+                      <input type="text" class="form-control" id="floatingInput6" name="izdatelBo" value="<?php echo $rowBooks2['izdatel'] ?>" data-razdel="<?php echo $i + 1; ?>" data-numbook="<?php echo $r + 1; ?>">
+                      <label for="floatingInput6">Издательство</label>
+                    </div>
+
+                    <div class="form-floating mb-3">
+                      <input type="text" class="form-control" id="floatingInput8" name="seriaBo" value="<?php echo $rowBooks2['seria'] ?>" data-razdel="<?php echo $i + 1; ?>" data-numbook="<?php echo $r + 1; ?>">
+                      <label for="floatingInput8">Серия</label>
+                    </div>
+
+                    <div class="form-floating mb-3">
+                      <input type="text" class="form-control" id="floatingInput19" name="yearBo" value="<?php echo $rowBooks2['year'] ?>" data-razdel="<?php echo $i + 1; ?>" data-numbook="<?php echo $r + 1; ?>">
+                      <label for="floatingInput19">Год издания</label>
+                    </div>
+                    <?php if ($rowBooks2['composite'] == 1) { ?>
+                      <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="floatingInput18" name="numbersBo" value="<?php echo $rowBooks2['numbers'] ?>" data-razdel="<?php echo $i + 1; ?>" data-numbook="<?php echo $r + 1; ?>">
+                        <label for="floatingInput18">Номера выпуска (при наличии)</label>
+                      </div>
+                      <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="floatingInput17" name="pagesBo" value="<?php echo $rowBooks2['pages'] ?>" data-razdel="<?php echo $i + 1; ?>" data-numbook="<?php echo $r + 1; ?>">
+                        <label for="floatingInput17">Страницы</label>
+                      </div>
+                    <?php } else { ?>
+                      <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="floatingInput7" name="volumeBo" value="<?php echo $rowBooks2['volume'] ?>" data-razdel="<?php echo $i + 1; ?>" data-numbook="<?php echo $r + 1; ?>">
+                        <label for="floatingInput7">Количество страниц</label>
+                      </div>
+                    <?php } ?>
+                    <br>
+
+
+
+
+
+
+                  <?php
+                  } else {
+                    if ($rowBooks2['authorFamil'] != "" and $rowBooks2['authorName'] != "") {
+                      if ($rowBooks2['fatherName'] != "") {
+                        echo "{$rowBooks2['authorFamil']} {$rowBooks2['authorName']} {$rowBooks2['fatherName']}.";
+                      } else {
+                        echo "{$rowBooks2['authorFamil']} {$rowBooks2['authorName']}.";
+                      }
+                    }
+
+                    echo " {$rowBooks2['titleBook']}";
+
+                    if ($rowBooks2['textFacts'] != "") {
+                      echo ": {$rowBooks2['textFacts']}";
+                    } else {
+                      echo "";
+                    }
+
+                    if ($rowBooks2['authorFamil'] != "" and  $rowBooks2['authorName'] != "") {
+                      if ($rowBooks2['fatherName'] != "") {
+                        echo " / {$rowBooks2['authorName']} {$rowBooks2['fatherName']} {$rowBooks2['authorFamil']}. — ";
+                      } else {
+                        echo " / {$rowBooks2['authorName']} {$rowBooks2['authorFamil']}. — ";
+                      }
+                    } else {
+                      echo " / ";
+                    }
+
+                    if ($rowBooks2['city'] != "") {
+                      echo "{$rowBooks2['city']} : {$rowBooks2['izdatel']}, ";
+                    }
+
+                    if ($rowBooks2['year'] != "") {
+                      echo "{$rowBooks2['year']}";
+                    }
+
+                    if ($rowBooks2['seria'] != "") {
+                      echo ". — ({$rowBooks2['seria']}).";
+                    } else {
+                      echo ".";
+                    }
+                  }
+
+                  ?>
+                </div>
+                <?php if ($root == 1) { ?>
+                  <div class="textarea">
+                    <label for="Textarea">Аннотация: </label>
+                    <textarea class="form-control redactBoInp" placeholder="Leave a comment here" id="Textarea" name="annotationBo" style="margin-bottom: 20px; min-height:150px; max-height:200px;" title="Аннотация" data-razdel="<?php echo $i + 1; ?>" data-numbook="<?php echo $r + 1; ?>"><?php echo $rowBooks2['annotation'] ?></textarea>
                   </div>
-
-                  <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="floatingInput5" name="cityBo" value="<?php echo $rowBooks2['city'] ?>" data-razdel="<?php echo $i + 1; ?>" data-numbook="<?php echo $r + 1; ?>">
-                    <label for="floatingInput5">Город издания</label>
-                  </div>
-
-                  <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="floatingInput6" name="izdatelBo" value="<?php echo $rowBooks2['izdatel'] ?>" data-razdel="<?php echo $i + 1; ?>" data-numbook="<?php echo $r + 1; ?>">
-                    <label for="floatingInput6">Издательство</label>
-                  </div>
-
-                  <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="floatingInput8" name="seriaBo" value="<?php echo $rowBooks2['seria'] ?>" data-razdel="<?php echo $i + 1; ?>" data-numbook="<?php echo $r + 1; ?>">
-                    <label for="floatingInput8">Серия</label>
-                  </div>
-
-                  <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="floatingInput7" name="yearBo" value="<?php echo $rowBooks2['year'] ?>" data-razdel="<?php echo $i + 1; ?>" data-numbook="<?php echo $r + 1; ?>">
-                    <label for="floatingInput7">Год издания</label>
-                  </div>
-                  <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="floatingInput7" name="volumeBo" value="<?php echo $rowBooks2['volume'] ?>" data-razdel="<?php echo $i + 1; ?>" data-numbook="<?php echo $r + 1; ?>">
-                    <label for="floatingInput7">Количество страниц</label>
-                  </div>
-                  <br>
-
-
-
-
-
-
                 <?php
                 } else {
-                  if ($rowBooks2['authorFamil'] != "" and $rowBooks2['authorName'] != "") {
-                    if ($rowBooks2['fatherName'] != "") {
-                      echo "{$rowBooks2['authorFamil']} {$rowBooks2['authorName']} {$rowBooks2['fatherName']}.";
-                    } else {
-                      echo "{$rowBooks2['authorFamil']} {$rowBooks2['authorName']}.";
-                    }
-                  }
-
-                  echo " {$rowBooks2['titleBook']}";
-
-                  if ($rowBooks2['textFacts'] != "") {
-                    echo ": {$rowBooks2['textFacts']}";
-                  } else {
-                    echo " / ";
-                  }
-
-                  if ($rowBooks2['authorFamil'] != "" and  $rowBooks2['authorName'] != "") {
-                    if ($rowBooks2['fatherName'] != "") {
-                      echo " / {$rowBooks2['authorName']} {$rowBooks2['fatherName']} {$rowBooks2['authorFamil']}. — ";
-                    } else {
-                      echo " / {$rowBooks2['authorName']} {$rowBooks2['authorFamil']}. — ";
-                    }
-                  } else {
-                    echo " / ";
-                  }
-
-                  if ($rowBooks2['city'] != "") {
-                    echo "{$rowBooks2['city']} : {$rowBooks2['izdatel']}, ";
-                  }
-
-                  if ($rowBooks2['year'] != "") {
-                    echo "{$rowBooks2['year']}";
-                  }
-
-                  if ($rowBooks2['seria'] != "") {
-                    echo ". — ({$rowBooks2['seria']}).";
-                  } else {
-                    echo ".";
-                  }
-                }
-
                 ?>
-              </div>
-              <?php if ($root == 1) { ?>
-                <div class="textarea">
-                  <label for="Textarea">Аннотация: </label>
-                  <textarea class="form-control redactBoInp" placeholder="Leave a comment here" id="Textarea" name="annotationBo" style="margin-bottom: 20px; min-height:150px; max-height:200px;" title="Аннотация" data-razdel="<?php echo $i + 1; ?>" data-numbook="<?php echo $r + 1; ?>"><?php echo $rowBooks2['annotation'] ?></textarea>
-                </div>
-              <?php
-              } else {
-              ?>
-                <p class="annotation<?php echo $koff; ?> annotationNone<?php echo $i + 1; ?>"><?php echo $rowBooks2['annotation']; ?></p>
+                  <p class="annotation<?php echo $koff; ?> annotationNone<?php echo $i + 1; ?>"><?php echo $rowBooks2['annotation']; ?></p>
+                <?php } ?>
+                <?php if ($root == 1) { ?>
+                  <span class="redactCoverBookDesc" id="<?php echo $r; ?>" data-razdel="<?php echo $i + 1; ?>">Изменить обложку</span>
+                <?php } ?>
+                <?php if ($root == 1) { ?>
+                  <button class="saveBo" title="Сохранить библиографическую запись" id="<?php echo $r + 1; ?>" data-razdel="<?php echo $i + 1; ?>"></button>
+                </form>
               <?php } ?>
-              <?php if ($root == 1) { ?>
-                <span class="redactCoverBookDesc" id="<?php echo $r; ?>" data-razdel="<? echo $i + 1; ?>">Изменить обложку</span>
-              <?php } ?>
-              <?php if ($root == 1) { ?>
-                <button class="saveBo" title="Сохранить библиографическую запись" id="<?php echo $r + 1; ?>" data-razdel="<?php echo $i + 1; ?>"></button>
-              </form>
-            <?php } ?>
+            </div>
           </div>
-        </div>
+
       <?php }
       ?>
 
     </div><?php } ?>
 
-  <div class="allBooks">
+  <div class="allBooks" style="background-color: <?php echo $_SESSION['razdels']['propBgBlock']; ?>;">
     <span id="navAllBooks" style="position: absolute; top:0; left:0;"></span>
-    <h1 class="pageTitle" style="height: auto !important; margin-top:35px;">Все книги</h1>
-    <div class="books" style="margin-top: 0;">
+    <h1 class="pageTitle" style="height: 10vh !important; margin-top:35px; color:<?php echo $_SESSION['razdels']['razdelFontColorT']; ?>;">Все книги</h1>
+    <div class="books" style="margin-top: 0; overflow-y: scroll; height:60vh;">
+
       <?php
-      $selectBooks = mysqli_query($connect, "SELECT * FROM `books` WHERE `id_user` = '{$_SESSION['user']['id']}' AND `numEx` = '$numEx' ORDER BY `numRazdel`") or die("Error select books: " . mysqli_error($connect));
+      $selectBooks = mysqli_query($connect, "SELECT * FROM `books` WHERE `id_user` = '$composer' AND `numEx` = '$numEx' ORDER BY `numRazdel`") or die("Error select books: " . mysqli_error($connect));
       for ($i = 0; $i < mysqli_num_rows($selectBooks); ++$i) {
         $rowAllBooks = mysqli_fetch_array($selectBooks);
         /*    if($rowAllBooks['numRazdel']=='1'){
@@ -663,7 +791,7 @@ for ($i = 0; $i < mysqli_num_rows($selectRazdels); ++$i) {
       }
       ?>
     </div>
-    <div class="containerFoot">
+    <div class="containerFoot" style="background-color: #303030; width:100%; padding:20px; position:relative; left:0; bottom:-5vh;">
       <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start hed flex-wrap-nowrap">
         <div class="titleBox d-flex flex-nowrap align-items-center justify-content-center justify-content-lg-start hed">
           <div class="logo"></div>
@@ -687,5 +815,5 @@ for ($i = 0; $i < mysqli_num_rows($selectRazdels); ++$i) {
 
 
   <?php
-  include './components/bottom.php';
+  include './components/bottomEx.php';
   ?>

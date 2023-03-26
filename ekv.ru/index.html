@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous"
+        type="text/css" />
+    <title>Шаблон полки</title>
+    <style>
+        body{
+            width: auto;
+        }
+        html{
+            height: auto;
+            width: auto;
+        }
+        .shelfBox {
+            display: block;
+            height: 100%;
+            width: 100%;
+        }
+
+        .shelf {
+            background-image: url('./img/polka.jpg');
+        }
+    </style>
+</head>
+<?php if($trimurl1=="http://localhost/administration.php" || $trimur2=="http://ekv.ru/administration.php" || $trimurl3 == "http://localhost/index.php"){ echo 'position:absolute;';} else {echo 'position:relative;';} ?>
+<body>
+    <div class="shelfBox">
+        <div class="shelf">
+
+        </div>
+        <div style="top: <?php echo $_SESSION['razdels']["$i"]['razdelPositionY']; ?>%; left: <?php echo $_SESSION['razdels']["$i"]['razdelPositionX']; ?>%; border-radius:<?php echo $_SESSION['razdels']["$i"]['razdelBorderRadius'] ?>; height: <?php echo $_SESSION['razdels']["$i"]['razdelHeight']; ?>vh; width:<?php echo $_SESSION['razdels']["$i"]['razdelWidth']; ?>vw; opacity:<?php echo $_SESSION['razdels']["$i"]['razdelOpacity']; ?>; background-color:<?php echo $_SESSION['razdels']["$i"]['razdelBg']; ?>;" class="bgRazdels" id="<?php echo $i + 1; ?>" data-bgr1="<?php echo  $_SESSION['razdels']["$i"]['razdelBg']; ?>"></div>
+        <!-- razdTitleInput -->
+
+        <textarea style="z-index:1000000; position:absolute; top: <?php echo $_SESSION['razdels']["$i"]['razdelPositionY']; ?>%; left: <?php echo $_SESSION['razdels']["$i"]['razdelPositionX']; ?>%; border-radius:<?php echo $_SESSION['razdels']["$i"]['razdelBorderRadius'] ?>; height: <?php echo $_SESSION['razdels']["$i"]['razdelHeight']; ?>vh; width:<?php echo $_SESSION['razdels']["$i"]['razdelWidth']; ?>vw; font-size:<?php echo $_SESSION['razdels']["$i"]['razdelFontSize']; ?>px ; font-family:<?php echo $_SESSION['razdels']["$i"]['razdelFontFamily']; ?>; text-align: <?php echo $_SESSION['razdels']["$i"]['razdelTextAlign']; ?>; color:<?php echo $_SESSION['razdels']["$i"]['razdelFontColor']; ?>; font-weight: <?php echo $_SESSION['razdels']["$i"]['razdelFontWeight']; ?>; font-style: <?php echo $_SESSION['razdels']["$i"]['razdelFontStyle']; ?>; text-decoration: <?php echo $_SESSION['razdels']["$i"]['razdelTextDecoration']; ?>;" name="titleRazdel<?php echo $i; ?>" class="razdTitleInput razdelItem item<?php echo $i; ?>" id="<?php echo $i; ?>" data-clr2="<?php echo $_SESSION['razdels']["$i"]['razdelFontColor']; ?>"><?php echo $_SESSION['razdels']["$i"]['title']; ?></textarea> 
+    </div>
+</body>
+
+</html>
+if (authorFamil == "") {
+    authorFamil = document.querySelector('input[name="authorFamilC1"]')
+} else {
+    authorFamil = authorFamil.value
+}
+var authorName = document.querySelector('input[name=authorName1]')
+if (authorName == "") {
+    authorName = document.querySelector('input[name="authorNameC1"]')
+} else {
+    authorName = authorName.value
+}
+var authorFathername = document.querySelector('input[name=authorFathername1]')
+if (authorFathername == "") {
+    authorFathername = document.querySelector('input[name="authorFathernamec1"]').value
+} else {
+    authorFathername = authorFathername.value
+}
+var volume = document.querySelector('input[name=volume1]')
+if (volume == "") {
+    volume = document.querySelector('input[name="volumeC1"]').value
+} else {
+    volume = volume.value
+}
+var titleBook = document.querySelector('input[name=titleBook1]')
+if (titleBook == "") {
+    titleBook = document.querySelector('input[name="titleBookC1"]')
+} else {
+    titleBook = titleBook.value
+}
+var textFacts = document.querySelector('input[name=textFacts1]')
+if (textFacts == "") {
+    textFacts = document.querySelector('input[name="textFactsC1"]')
+} else {
+    textFacts = textFacts.value
+}
+var city = document.querySelector('input[name=city1]')
+if (city == "") {
+    city = document.querySelector('input[name="cityC1"]')
+} else {
+    city = city.value
+}
+var izdatel = document.querySelector('input[name=izdatel1]')
+if(izdatel == ""){
+    izdatel = document.querySelector('input[name="izdatelC1"]')
+} else {
+    izdatel = izdatel.value
+}
+var year = document.querySelector('input[name=year1]')
+if(year == ""){
+    year = document.querySelector('input[name="yearC1"]')
+} else {
+    year = year.value
+}
+var seria = document.querySelector('input[name=seria1]')
+if(seria ==""){
+    seria = document.querySelector('input[name="seriaC1"]')
+} else {
+    seria = seria.value
+}
+var annotation = document.querySelector('textarea[name=annotation1]')
+if(annotation == ""){
+    annotation = document.querySelector('textarea[name=annotationC1]')
+} else {
+    annotation = annotation.value
+}
+var razdelForForm = document.querySelector('.razdelForForm1')
+var composite = document.querySelector('input[name="composite1"]')
+if (composite) {
+    composite = composite.value
+}
+var textSource = document.querySelector('input[name="textSource1"]')
+if (textSource) {
+    textSource = textSource.value
+}
+var pages = document.querySelector('input[name="pages1"]')
+if (pages) {
+    pages = pages.value
+}
+var numbers = document.querySelector('input[name="numbers1"]')
+if (numbers) {
+    numbers = numbers.value
+}
+var izdanieFacts = document.querySelector('input[name="izdanieFacts1"]')
+if (izdanieFacts) {
+    izdanieFacts = izdanieFacts.value
+}
+
+
+
+var propBgRazd1 = document.querySelector('.bgRazdels[id="1"]')
+var coordsBg1 = document.querySelector('.bgRazdels[id="1"]').getBoundingClientRect();
+var propRazd2 = document.querySelector('.razdTitleInput[id="1"]')
+var coords2 = document.querySelector('.razdTitleInput[id="1"]').getBoundingClientRect();
+var propBgRazd2 = document.querySelector('.bgRazdels[id="2"]')
+var propRazd3 = document.querySelector('.razdTitleInput[id="2"]')
+var coords3 = document.querySelector('.razdTitleInput[id="2"]').getBoundingClientRect();
+var propBgRazd3 = document.querySelector('.bgRazdels[id="3"]')
+
+//positions
+var propRazdPositionX1 = (coords1.left * 100) / window.innerWidth
+var propRazdPositionY1 = (coords1.top * 100) / window.innerHeight
+var propRazdPositionX2 = (coords2.left * 100) / window.innerWidth
+var propRazdPositionY2 = (coords2.top * 100) / window.innerHeight
+var propRazdPositionX3 = (coords3.left * 100) / window.innerWidth
+var propRazdPositionY3 = (coords3.top * 100) / window.innerHeight
+
+
+//backgrounds
+var propBg1 = propBgRazd1.dataset.bgr1
+var propBg2 = propBgRazd2.dataset.bgr1
+var propBg3 = propBgRazd3.dataset.bgr1
+
+//heights
+var propHeight1 = propRazd1.style.height.slice(0, -2)
+/*  propHeight1 = (propHeight1 * 100) / window.innerHeight */
+var propHeight2 = propRazd2.style.height.slice(0, -2)
+/*  propHeight2 = (propHeight2 * 100) / window.innerHeight */
+var propHeight3 = propRazd3.style.height.slice(0, -2)
+/* propHeight3 = (propHeight3 * 100) / window.innerHeight */
+
+//widths
+var propWidth1 = propRazd1.style.width.slice(0, -2)
+/*         propWidth1 = (propWidth1 * 100) / window.innerWidth */
+var propWidth2 = propRazd2.style.width.slice(0, -2)
+/*         propWidth2 = (propWidth2 * 100) / window.innerWidth */
+var propWidth3 = propRazd3.style.width.slice(0, -2)
+/* propWidth2 = (propWidth2 * 100) / window.innerWidth */
+
+//textAlign
+var propTextAlign1 = propRazd1.style.textAlign
+var propTextAlign2 = propRazd2.style.textAlign
+var propTextAlign3 = propRazd3.style.textAlign
+
+//opacity
+var propOpacity1 = propBgRazd1.style.opacity
+var propOpacity2 = propBgRazd2.style.opacity
+var propOpacity3 = propBgRazd3.style.opacity
+
+//fontSize
+var propFontSize1 = propRazd1.style.fontSize.slice(0, -2)
+var propFontSize2 = propRazd2.style.fontSize.slice(0, -2)
+var propFontSize3 = propRazd3.style.fontSize.slice(0, -2)
+
+//fontColor
+var propFontColor1 = propRazd1.dataset.clr2
+var propFontColor2 = propRazd2.dataset.clr2
+var propFontColor3 = propRazd3.dataset.clr2
+
+//fontWeight
+var propFontWeight1 = propRazd1.style.fontWeight
+var propFontWeight2 = propRazd2.style.fontWeight
+var propFontWeight3 = propRazd3.style.fontWeight
+
+//fontStyle
+var propFontStyle1 = propRazd1.style.fontStyle
+var propFontStyle2 = propRazd2.style.fontStyle
+var propFontStyle3 = propRazd3.style.fontStyle
+
+//textDecoration
+var propTextDecoration1 = propRazd1.style.textDecoration
+var propTextDecoration2 = propRazd2.style.textDecoration
+var propTextDecoration3 = propRazd3.style.textDecoration
+
+//fontFamily
+var propFontFamily1 = propRazd1.style.fontFamily
+var propFontFamily2 = propRazd2.style.fontFamily
+var propFontFamily3 = propRazd3.style.fontFamily
+
+//borderRadius
+var propBorderRadius1 = propRazd1.style.borderRadius
+var propBorderRadius2 = propRazd2.style.borderRadius
+var propBorderRadius3 = propRazd3.style.borderRadius

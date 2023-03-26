@@ -18,13 +18,16 @@ mysqli_query($connect, "SET NAMES UTF8");
 
       for ($i = 1; $i <= $numrows; ++$i) {
         $row = mysqli_fetch_array($result);
-      ?>
-        <a class="exhibBtn" href="exhibition.php?title=<?php echo "{$row['exhibTitle']}"; ?>&numEx=<?php echo "{$row['id']}" ?>&root=0">
-          <div class="exhibitionCover">
-            <img src="<?php echo "{$row['cover_path']}"; ?>" alt="" width="100%" class="exhImg">
-            <div class="exhibTitle"><?php echo "{$row['exhibTitle']}" ?></div>
-          </div>
-        </a>
+        if ($row['publishing'] == 1) { ?>
+          <a class="exhibBtn" href="exhibition.php?composer=<?php echo "{$row['id_user']}"; ?>&numEx=<?php echo "{$row['id']}" ?>&root=0">
+            <div class="exhibitionCover">
+              <img src="<?php echo "{$row['cover_path']}"; ?>" alt="" width="100%" class="exhImg">
+              <div class="exhibTitle"><?php echo "{$row['exhibTitle']}" ?></div>
+            </div>
+          </a>
+        <?php }
+        ?>
+
       <?php }
       ?>
     </div>

@@ -11,6 +11,7 @@ require_once './components/top.php';
     require_once './db.php';
     mysqli_query($connect, "SET NAMES UTF8");
     if (isset($_SESSION['user'])) { ?>
+    <div id="userId" style="display: none;"><?php echo $_SESSION['user']['id'] ?></div>
         <div class="nameAvatar clearfix">
             <div class="avaBox">
                 <div class="ava"><img src="<?php echo $_SESSION['user']['imgPath']; ?>" alt="Аватар пользователя"></div>
@@ -18,6 +19,7 @@ require_once './components/top.php';
             </div>
 
             <div class="text">
+                
                 <p class="profileTitle"><?php echo $_SESSION['user']['firstName']; ?> <?php echo $_SESSION['user']['secondName']; ?></p><br>
                 <p class="profileReg"><?php echo $_SESSION['user']['job_title'] ?></p><br>
                 <p class="profileReg">Дата регистрации: <?php echo $_SESSION['user']['dataReg']; ?></p><br>
@@ -51,7 +53,8 @@ require_once './components/top.php';
                     for ($i = 1; $i <= $numrows; ++$i) {
                         $row = mysqli_fetch_array($result);
                     ?>
-                        <div style="width:30%; margin-bottom:20px; position:relative;">
+                        <div style="width:30%; margin-bottom:20px; position:relative;" id="<?php echo $i - 1; ?>">
+                        <div class="publicFlag" id="<?php echo $i - 1; ?>" style="display:<?php if($row['publishing'] == 0) { echo 'none'; } else { echo 'block'; } ?>;"><img src="./img/starYellow.svg" alt="" style="width: 100%; height:100%;"></div>
                             <!-- <div class="krestikExhib">x</div> -->
                             <!-- <div class="form" style="border:1px solid red; width:30%; margin-bottom:20px;"> -->
                             <button type="submit" class="exhibBtn" name="exhib<?php echo $i ?>" id="<?php echo $i - 1; ?>" style="height: 100%; max-height:250px; width:100%;">
@@ -63,13 +66,13 @@ require_once './components/top.php';
                                 </div>
                                 <div class="menuSel" id="<?php echo $i - 1; ?>">
                                     <ul class="hoverRange">
-                                        <li><a class="selItem" href="exhibition.php?title=<?php echo "{$row['exhibTitle']}"; ?>&numEx=<?php echo "{$row['id']}" ?>&root=1">Редактировать</a></li>
-                                        <li><a class="selItem" href="exhibition.php?title=<?php echo "{$row['exhibTitle']}"; ?>&numEx=<?php echo "{$row['id']}" ?>&root=0">Просмотреть</a></li>
+                                        <li><a class="selItem" href="exhibition.php?composer=<?php echo "{$row['id_user']}"; ?>&numEx=<?php echo "{$row['id']}" ?>&root=1">Редактировать</a></li>
+                                        <li><a class="selItem" href="exhibition.php?composer=<?php echo "{$row['id_user']}"; ?>&numEx=<?php echo "{$row['id']}" ?>&root=0">Просмотреть</a></li>
                                         <li>
-                                            <div>Опубликовать</div>
+                                            <div id="<?php echo $i - 1; ?>" class="public"><?php if($row['publishing'] == 0) { echo "Опубликовать";} else { echo 'Отозвать публикацию';} ?></div>
                                         </li>
                                         <li>
-                                            <div>Удалить</div>
+                                            <div id="<?php echo $row['id']; ?>" class="delete">Удалить</div>
                                         </li>
                                     </ul>
                                 </div>

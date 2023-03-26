@@ -1,5 +1,5 @@
 <?php
 
-$connect = mysqli_connect('localhost','root','','ekv.ru');
+$connect = mysqli_connect('localhost','root','','ekv_ru');
 
 ?>
